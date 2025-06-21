@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,29 +16,29 @@ import {
 import { Shield, ArrowLeft } from "lucide-react";
 import { redirect } from "next/navigation";
 
-interface OtpInputProps {
-  phoneNumber?: string;
-  onBack?: () => void;
-  onVerify?: (otp: string) => void;
-  onResend?: () => void;
-}
-
-export default function OtpInput({
-  phoneNumber = "+1 (555) 123-4567",
-  onBack,
-  onVerify,
-  onResend,
-}: OtpInputProps) {
+export default function OtpConfirmation() {
   const [otp, setOtp] = useState("");
-  const [, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  // Static phone number for demo
+  const phoneNumber = "+1 (555) 123-4567";
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [timeLeft]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length >= 4) {
-      onVerify?.(otp);
       console.log("OTP submitted:", otp);
+      alert("OTP verified successfully!");
     }
-    redirect("/products");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,11 +48,16 @@ export default function OtpInput({
     }
   };
 
+  const handleBack = () => {
+    console.log("Going back to phone input");
+  };
+
   const handleResend = () => {
     setTimeLeft(60);
+    setCanResend(false);
     setOtp("");
-    onResend?.();
     console.log("Resending OTP to:", phoneNumber);
+    alert("OTP resent!");
   };
 
   return (
@@ -60,16 +65,14 @@ export default function OtpInput({
       <Card className="w-full max-w-md max-sm:border-none max-sm:shadow-none">
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2">
-            {onBack && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onBack}
-                className="p-1 h-8 w-8"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="p-1 h-8 w-8"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
             <div className="flex-1">
               <CardTitle className="text-2xl font-bold text-center">
                 Verify Your Phone
@@ -107,7 +110,14 @@ export default function OtpInput({
               </p>
             </div>
 
-            <Button type="submit" className="w-full" disabled={otp.length < 4}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={otp.length < 4}
+              onClick={() => {
+                redirect("/products");
+              }}
+            >
               Verify Code
             </Button>
 
@@ -115,14 +125,20 @@ export default function OtpInput({
               <p className="text-sm text-muted-foreground">
                 Didn&apos;t receive the code?
               </p>
-              <Button
-                type="button"
-                variant="link"
-                onClick={handleResend}
-                className="p-0 h-auto text-primary"
-              >
-                Resend code
-              </Button>
+              {canResend ? (
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={handleResend}
+                  className="p-0 h-auto text-primary"
+                >
+                  Resend code
+                </Button>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Resend in {timeLeft}s
+                </p>
+              )}
             </div>
 
             <div className="text-center text-sm text-muted-foreground">
