@@ -13,6 +13,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default function ShortsPage() {
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -40,18 +41,17 @@ export default function ShortsPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-black">
+    <div className="h-screen flex flex-col bg-gray-50">
       {/* Single Image Section - Takes most space */}
       <div className="flex-1 relative p-4">
-        {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-20 rounded-2xl" />
-
         {/* Top Overlay - Product Details Link */}
         <div className="absolute top-6 left-6 z-10">
           <Button
             size="sm"
-            className="bg-black/50 backdrop-blur-sm border-white/20 text-white hover:bg-black/70"
             variant="outline"
+            onClick={() => {
+              redirect("/product-details");
+            }}
           >
             <ArrowUpRight className="h-4 w-4 mr-1" />
             Details
@@ -67,7 +67,7 @@ export default function ShortsPage() {
         </div>
 
         {/* Single Product Image */}
-        <div className="w-full h-full bg-gray-200 rounded-2xl overflow-hidden">
+        <div className="w-full h-full bg-gray-200 rounded-2xl overflow-hidden border">
           <div className="w-full h-full flex items-center justify-center">
             <span className="text-gray-400 text-lg">Product Image</span>
           </div>
@@ -75,31 +75,35 @@ export default function ShortsPage() {
       </div>
 
       {/* Product Details Section - Toggleable */}
-      <div className="bg-black/95 backdrop-blur-sm border-t border-white/10">
+      <div className="bg-white border-t">
         {/* Toggle Handle */}
         <div className="flex items-center justify-center py-2">
           <button
             onClick={() => setIsDescriptionOpen(!isDescriptionOpen)}
-            className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <div className="w-8 h-1 bg-white/30 rounded-full"></div>
+            <div className="w-8 h-1 bg-gray-300 rounded-full"></div>
             {isDescriptionOpen ? (
               <ChevronDown className="h-4 w-4" />
             ) : (
               <ChevronUp className="h-4 w-4" />
             )}
-            <div className="w-8 h-1 bg-white/30 rounded-full"></div>
+            <div className="w-8 h-1 bg-gray-300 rounded-full"></div>
           </button>
         </div>
 
         {/* Collapsed View - Basic Info */}
         {!isDescriptionOpen && (
           <div className="px-4 pb-4">
-            <div className="text-white space-y-2">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">{product.name}</h2>
+                <h2 className="text-lg font-bold text-foreground">
+                  {product.name}
+                </h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold">${product.price}</span>
+                  <span className="text-xl font-bold text-foreground">
+                    ${product.price}
+                  </span>
                   <Badge className="bg-red-500 text-white text-xs">
                     {product.discount}% OFF
                   </Badge>
@@ -108,12 +112,16 @@ export default function ShortsPage() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">{product.rating}</span>
-                  <span className="text-white/60 text-xs">
+                  <span className="text-sm font-medium text-foreground">
+                    {product.rating}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
                     ({product.reviews.toLocaleString()})
                   </span>
                 </div>
-                <div className="text-xs text-white/60">Tap to see more</div>
+                <div className="text-xs text-muted-foreground">
+                  Tap to see more
+                </div>
               </div>
             </div>
           </div>
@@ -122,25 +130,27 @@ export default function ShortsPage() {
         {/* Expanded View - Full Details */}
         {isDescriptionOpen && (
           <div className="px-4 pb-4 max-h-64 overflow-y-auto">
-            <div className="text-white space-y-4">
+            <div className="space-y-4">
               {/* Product Name & Price */}
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold leading-tight">
+                  <h2 className="text-xl font-bold leading-tight text-foreground">
                     {product.name}
                   </h2>
-                  <p className="text-white/90 text-sm mt-1">
+                  <p className="text-muted-foreground text-sm mt-1">
                     {product.shortDesc}
                   </p>
                 </div>
                 <div className="text-right ml-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold">${product.price}</span>
+                    <span className="text-2xl font-bold text-foreground">
+                      ${product.price}
+                    </span>
                     <Badge className="bg-red-500 text-white">
                       {product.discount}% OFF
                     </Badge>
                   </div>
-                  <span className="text-sm text-white/60 line-through">
+                  <span className="text-sm text-muted-foreground line-through">
                     ${product.originalPrice}
                   </span>
                 </div>
@@ -150,8 +160,10 @@ export default function ShortsPage() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">{product.rating}</span>
-                  <span className="text-white/60 text-sm">
+                  <span className="font-medium text-foreground">
+                    {product.rating}
+                  </span>
+                  <span className="text-muted-foreground text-sm">
                     ({product.reviews.toLocaleString()} reviews)
                   </span>
                 </div>
@@ -159,22 +171,24 @@ export default function ShortsPage() {
 
               {/* Detailed Description */}
               <div>
-                <p className="text-white/80 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {product.detailedDesc}
                 </p>
               </div>
 
               {/* Catchy Review */}
-              <div className="bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 inline-block">
-                <p className="text-sm font-medium">{`"${product.catchyReview}"`}</p>
+              <div className="bg-gray-100 rounded-full px-4 py-2 inline-block">
+                <p className="text-sm font-medium text-foreground">
+                  {`"${product.catchyReview}"`}
+                </p>
               </div>
 
               {/* Additional Features */}
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-white/90">
+                <h4 className="text-sm font-semibold text-foreground">
                   Key Features:
                 </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs text-white/70">
+                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                   <div>• Active Noise Cancellation</div>
                   <div>• 20hr Battery Life</div>
                   <div>• Spatial Audio</div>
@@ -187,36 +201,33 @@ export default function ShortsPage() {
       </div>
 
       {/* Call to Action Buttons - Fixed at bottom */}
-      <div className="bg-black/95 backdrop-blur-sm p-4 border-t border-white/10">
-        <div className="flex gap-3">
+      <div className="bg-white p-3 border-t">
+        <div className="flex gap-2">
+          {/* Wishlist Button - Icon only with tooltip-like behavior */}
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20 font-medium"
+            className="w-12 h-10 p-0"
             onClick={handleWishlist}
+            title="Add to Wishlist"
           >
             <Heart
-              className={`h-4 w-4 ${
+              className={`h-5 w-5 ${
                 isWishlisted ? "fill-red-500 text-red-500" : ""
               }`}
             />
           </Button>
 
-          <Button
-            size="sm"
-            className="flex-1 bg-white text-black hover:bg-white/90 font-medium"
-          >
+          {/* Buy Now Button - Primary action, gets most space */}
+          <Button size="sm" className="flex-1 h-10 font-medium">
             <Zap className="h-4 w-4 mr-2" />
             Buy Now
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20 font-medium"
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Add to Cart
+          {/* Add to Cart Button - Icon + short text */}
+          <Button variant="outline" size="sm" className="h-10 px-3 font-medium">
+            <ShoppingCart className="h-4 w-4 mr-1" />
+            Cart
           </Button>
         </div>
       </div>
