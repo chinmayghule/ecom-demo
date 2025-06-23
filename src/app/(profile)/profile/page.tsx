@@ -26,7 +26,6 @@ import {
   Edit,
   Plus,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
 
 // Mock user data
 const userData = {
@@ -108,9 +107,6 @@ export default function ProfilePage() {
   const [isAddressesOpen, setIsAddressesOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  const path = usePathname();
-  console.log(path);
 
   const getStatusColor = (status: string) => {
     switch (status) {
