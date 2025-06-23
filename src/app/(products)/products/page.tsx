@@ -186,7 +186,7 @@ export default function ProductList() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 pb-20">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="p-4">

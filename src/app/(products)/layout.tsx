@@ -1,10 +1,10 @@
-import BottomNavbar from "./_components/BottomNavbar";
+import BottomNavbar from "../_components/BottomNavbar";
 
 function ProductsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex flex-col">
-      <main className="overflow-y-scroll">{children}</main>
-      <footer>
+    <main className="flex flex-col max-h-screen">
+      <main className="">{children}</main>
+      <footer className="">
         <BottomNavbar />
       </footer>
     </main>
